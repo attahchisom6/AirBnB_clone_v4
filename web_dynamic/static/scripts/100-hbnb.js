@@ -1,153 +1,113 @@
-const $ = window.$;
-$(document).ready(function () {
-  const amenities = {};
-  const states = {};
-  const cities = {};
+$('document').ready(function () {
+  const api = 'http://' + window.location.hostname;
 
-  $('.amenities li input').click(function () {
-    const dataID = $(this).attr('data-id');
-    const dataName = $(this).attr('data-name');
-    if ($(this).prop('checked') === true) {
-      amenities[dataID] = dataName;
+  $.get(api + ':5001:/api/v1/status/', function (response) {
+    if (response.status === 'OK') {
+      $('DIV#api_status').addClass('available');
     } else {
-      delete amenities[dataID];
-    }
-    const amenitiesN = Object.values(amenities);
-    $('.amenities h4').text(amenitiesN.join(', '));
-  });
-
-  $('.locations H2 input').click(function () {
-    const dataIDState = $(this).attr('data-id');
-    const dataNameState = $(this).attr('data-name');
-    if ($(this).prop('checked') === true) {
-      states[dataIDState] = dataNameState;
-    } else {
-      delete states[dataIDState];
-    }
-    const statesN = Object.values(states);
-    $('.locations h4').text(statesN.join(', '));
-  });
-
-  $('.locations LI input').click(function () {
-    const dataIDCity = $(this).attr('data-id');
-    const dataNameCity = $(this).attr('data-name');
-    if ($(this).prop('checked') === true) {
-      cities[dataIDCity] = dataNameCity;
-    } else {
-      delete cities[dataIDCity];
-    }
-    const citiesN = Object.values(cities);
-    $('.locations h4').text(citiesN.join(', '));
-  });
-
-  $.get('http://0.0.0.0:5001/api/v1/status/', function (data, textStatus) {
-    if (data.status === 'OK') {
-      $('#api_status').css('background-color', '');
-      $('#api_status').addClass('available');
+      $('DIV#api_status').removeClass('available');
     }
   });
 
   $.ajax({
+    url: api + ':5001/api/v1/places_search/',
     type: 'POST',
-    url: 'http://0.0.0.0:5001/api/v1/places_search',
     data: '{}',
-    headers: { 'Content-Type': 'application/json' }
-  }).done(loadPlaces);
+    contentType: 'application/json',
+    dataType: 'json',
+    success: appendPlaces
+  });
 
-  $('button').click(function () {
-    $('.places article').remove();
-    const strAmenitiesID = getStrID(amenities);
-    const strStatesID = getStrID(states);
-    const strCitiesID = getStrID(cities);
-    const strData = '{"amenities": [' + strAmenitiesID + '], "states": [' + strStatesID + '], "cities": [' + strCitiesID + ']}';
+  let states = {};
+  $('.locations > UL > H2 > INPUT[type="checkbox"]').change(function () {
+    if ($(this).is(':checked')) {
+      states[$(this).attr('data-id')] = $(this).attr('data-name');
+    } else {
+      delete states[$(this).attr('data-id')];
+    }
+    const locations = Object.assign({}, states, cities);
+    if (Object.values(locations).length === 0) {
+      $('.locations H4').html('&nbsp;');
+    } else {
+      $('.locations H4').text(Object.values(locations).join(', '));
+    }
+  });
 
+  let cities = {};
+  $('.locations > UL > UL > LI INPUT[type="checkbox"]').change(function () {
+    if ($(this).is(':checked')) {
+      cities[$(this).attr('data-id')] = $(this).attr('data-name');
+    } else {
+      delete cities[$(this).attr('data-id')];
+    }
+    const locations = Object.assign({}, states, cities);
+    if (Object.values(locations).length === 0) {
+      $('.locations H4').html('&nbsp;');
+    } else {
+      $('.locations H4').text(Object.values(locations).join(', '));
+    }
+  });
+
+  let amenities = {};
+  $('.amenities INPUT[type="checkbox"]').change(function () {
+    if ($(this).is(':checked')) {
+      amenities[$(this).attr('data-id')] = $(this).attr('data-name');
+    } else {
+      delete amenities[$(this).attr('data-id')];
+    }
+    if (Object.values(amenities).length === 0) {
+      $('.amenities H4').html('&nbsp;');
+    } else {
+      $('.amenities H4').text(Object.values(amenities).join(', '));
+    }
+  });
+
+  $('BUTTON').click(function () {
     $.ajax({
+      url: api + ':5001/api/v1/places_search/',
       type: 'POST',
-      url: 'http://0.0.0.0:5001/api/v1/places_search',
-      data: strData,
-      headers: { 'Content-Type': 'application/json' }
-    }).done(loadPlaces);
+      data: JSON.stringify({
+        'states': Object.keys(states),
+        'cities': Object.keys(cities),
+        'amenities': Object.keys(amenities)
+      }),
+      contentType: 'application/json',
+      dataType: 'json',
+      success: appendPlaces
+    });
   });
 });
 
-function getStrID (object) {
-  const objectsID = Object.keys(object);
-  objectsID.forEach(function (part, index) {
-    this[index] = '"' + this[index] + '"';
-  }, objectsID);
-  return objectsID.join(', ');
-}
-
-function compare (a, b) {
-  if (a.name < b.name) {
-    return -1;
-  }
-  if (a.name > b.name) {
-    return 1;
-  }
-  return 0;
-}
-
-function loadPlaces (data) {
-  data.sort(compare);
-
-  for (let i = 0; i < data.length; i++) {
-    const place = data[i];
-
-    // Creating title
-    const divTitle = document.createElement('div');
-    $(divTitle).addClass('title');
-    $(divTitle).append('<h2>' + place.name + '</h2>');
-    const divPrice = document.createElement('div');
-    $(divPrice).append(place.price_by_night);
-    $(divPrice).addClass('price_by_night');
-    $(divTitle).append(divPrice);
-
-    // Creating information
-    const divInformation = document.createElement('div');
-    $(divInformation).addClass('information');
-
-    const divMaxGuest = document.createElement('div');
-    $(divMaxGuest).addClass('max_guest');
-    const iUser = document.createElement('i');
-    $(iUser).addClass('fa fa-users fa-3x');
-    $(divMaxGuest).append(iUser);
-    const br1 = document.createElement('br');
-    $(divMaxGuest).append(br1);
-    $(divMaxGuest).append(place.max_guest + ' Guests');
-
-    const divNumberRooms = document.createElement('div');
-    $(divNumberRooms).addClass('number_rooms');
-    const iBed = document.createElement('i');
-    $(iBed).addClass('fa fa-bed fa-3x');
-    $(divNumberRooms).append(iBed);
-    const br2 = document.createElement('br');
-    $(divNumberRooms).append(br2);
-    $(divNumberRooms).append(place.number_rooms + ' Bedrooms');
-
-    const divNumberBathrooms = document.createElement('div');
-    $(divNumberBathrooms).addClass('number_bathrooms');
-    const iBath = document.createElement('i');
-    $(iBath).addClass('fa fa-bath fa-3x');
-    $(divNumberBathrooms).append(iBath);
-    const br3 = document.createElement('br');
-    $(divNumberBathrooms).append(br3);
-    $(divNumberBathrooms).append(place.number_bathrooms + ' Bathroom');
-
-    $(divInformation).append(divMaxGuest);
-    $(divInformation).append(divNumberRooms);
-    $(divInformation).append(divNumberBathrooms);
-
-    // Creating description
-    const divDescription = document.createElement('div');
-    $(divDescription).addClass('description');
-    $(divDescription).append(place.description);
-
-    const article = document.createElement('article');
-    $(article).append(divTitle);
-    $(article).append(divInformation);
-    $(article).append(divDescription);
-
-    $('.places').append(article);
-  }
+function appendPlaces (data) {
+  $('SECTION.places').empty();
+  $('SECTION.places').append(data.map(place => {
+    return `<ARTICLE>
+              <DIV class="title">
+                <H2>${place.name}</H2>
+                  <DIV class="price_by_night">
+                    ${place.price_by_night}
+                  </DIV>
+                </DIV>
+                <DIV class="information">
+                  <DIV class="max_guest">
+                    <I class="fa fa-users fa-3x" aria-hidden="true"></I>
+                    </BR>
+                    ${place.max_guest} Guests
+                  </DIV>
+                  <DIV class="number_rooms">
+                    <I class="fa fa-bed fa-3x" aria-hidden="true"></I>
+                    </BR>
+                    ${place.number_rooms} Bedrooms
+                  </DIV>
+                  <DIV class="number_bathrooms">
+                    <I class="fa fa-bath fa-3x" aria-hidden="true"></I>
+                    </BR>
+                    ${place.number_bathrooms} Bathrooms
+                  </DIV>
+                </DIV>
+                <DIV class="description">
+                  ${place.description}
+                </DIV>
+              </ARTICLE>`;
+  }));
 }

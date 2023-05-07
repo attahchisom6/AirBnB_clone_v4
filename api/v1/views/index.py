@@ -1,33 +1,30 @@
 #!/usr/bin/python3
-"""
-
-Flask web server creation to handle api petition-requests
-
-"""
-from flask import Response, jsonify
-from api.v1.views import app_views
+""" Index """
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 from models import storage
-from models.engine.db_storage import classes
+from api.v1.views import app_views
+from flask import jsonify
 
 
-@app_views.route('/status')
-def check_status():
-    """
-    Commit changes in database
-    """
-    status_dict = {"status": "OK"}
-    return jsonify(status_dict)
+@app_views.route('/status', methods=['GET'], strict_slashes=False)
+def status():
+    """ Status of API """
+    return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats')
-def num_objs():
-    """
-    Retrieves the number of each objects by type
-    """
-    objs = {"amenities": storage.count(classes["Amenity"]),
-            "cities": storage.count(classes["City"]),
-            "places": storage.count(classes["Place"]),
-            "reviews": storage.count(classes["Review"]),
-            "states": storage.count(classes["State"]),
-            "users": storage.count(classes["User"])}
-    return jsonify(objs)
+@app_views.route('/stats', methods=['GET'], strict_slashes=False)
+def number_objects():
+    """ Retrieves the number of each objects by type """
+    classes = [Amenity, City, Place, Review, State, User]
+    names = ["amenities", "cities", "places", "reviews", "states", "users"]
+
+    num_objs = {}
+    for i in range(len(classes)):
+        num_objs[names[i]] = storage.count(classes[i])
+
+    return jsonify(num_objs)

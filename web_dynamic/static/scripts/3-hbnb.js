@@ -1,99 +1,65 @@
-const $ = window.$;
-$(document).ready(function () {
-  const amenities = {};
-  $('.popover li input').click(function () {
-    const dataID = $(this).attr('data-id');
-    const dataName = $(this).attr('data-name');
-    if ($(this).prop('checked') === true) {
-      amenities[dataID] = dataName;
+$('document').ready(function () {
+  const api = 'http://' + window.location.hostname;
+
+  $.get(api + ':5001:/api/v1/status/', function (response) {
+    if (response.status === 'OK') {
+      $('DIV#api_status').addClass('available');
     } else {
-      delete amenities[dataID];
+      $('DIV#api_status').removeClass('available');
     }
-    const amenitiesN = Object.values(amenities);
-    $('.amenities h4').text(amenitiesN.join(', '));
   });
 
-  $.get('http://0.0.0.0:5001/api/v1/status/', function (data, textStatus) {
-    if (data.status === 'OK') {
-      $('#api_status').css('background-color', '');
-      $('#api_status').addClass('available');
-    }
-  });
   $.ajax({
+    url: api + ':5001/api/v1/places_search/',
     type: 'POST',
-    url: 'http://0.0.0.0:5001/api/v1/places_search',
     data: '{}',
-    headers: { 'Content-Type': 'application/json' }
-  }).done(function (data) {
-    data.sort(compare);
-    for (let i = 0; i < data.length; i++) {
-      const place = data[i];
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function (data) {
+      $('SECTION.places').append(data.map(place => {
+        return `<ARTICLE>
+                  <DIV class="title">
+                    <H2>${place.name}</H2>
+                    <DIV class="price_by_night">
+                      ${place.price_by_night}
+                    </DIV>
+                  </DIV>
+                  <DIV class="information">
+                    <DIV class="max_guest">
+                      <I class="fa fa-users fa-3x" aria-hidden="true"></I>
+                      </BR>
+                      ${place.max_guest} Guests
+                    </DIV>
+                    <DIV class="number_rooms">
+                      <I class="fa fa-bed fa-3x" aria-hidden="true"></I>
+                      </BR>
+                      ${place.number_rooms} Bedrooms
+                    </DIV>
+                    <DIV class="number_bathrooms">
+                      <I class="fa fa-bath fa-3x" aria-hidden="true"></I>
+                      </BR>
+                      ${place.number_bathrooms} Bathrooms
+                    </DIV>
+                  </DIV>
+                  <DIV class="description">
+                    ${place.description}
+                  </DIV>
+                </ARTICLE>`;
+      }));
+    }
+  });
 
-      // Creating title
-      const divTitle = document.createElement('div');
-      $(divTitle).addClass('title');
-      $(divTitle).append('<h2>' + place.name + '</h2>');
-      const divPrice = document.createElement('div');
-      $(divPrice).append(place.price_by_night);
-      $(divPrice).addClass('price_by_night');
-      $(divTitle).append(divPrice);
-
-      // Creating information
-      const divInformation = document.createElement('div');
-      $(divInformation).addClass('information');
-
-      const divMaxGuest = document.createElement('div');
-      $(divMaxGuest).addClass('max_guest');
-      const iUser = document.createElement('i');
-      $(iUser).addClass('fa fa-users fa-3x');
-      $(divMaxGuest).append(iUser);
-      const br1 = document.createElement('br');
-      $(divMaxGuest).append(br1);
-      $(divMaxGuest).append(place.max_guest + ' Guests');
-
-      const divNumberRooms = document.createElement('div');
-      $(divNumberRooms).addClass('number_rooms');
-      const iBed = document.createElement('i');
-      $(iBed).addClass('fa fa-bed fa-3x');
-      $(divNumberRooms).append(iBed);
-      const br2 = document.createElement('br');
-      $(divNumberRooms).append(br2);
-      $(divNumberRooms).append(place.number_rooms + ' Bedrooms');
-
-      const divNumberBathrooms = document.createElement('div');
-      $(divNumberBathrooms).addClass('number_bathrooms');
-      const iBath = document.createElement('i');
-      $(iBath).addClass('fa fa-bath fa-3x');
-      $(divNumberBathrooms).append(iBath);
-      const br3 = document.createElement('br');
-      $(divNumberBathrooms).append(br3);
-      $(divNumberBathrooms).append(place.number_bathrooms + ' Bathroom');
-
-      $(divInformation).append(divMaxGuest);
-      $(divInformation).append(divNumberRooms);
-      $(divInformation).append(divNumberBathrooms);
-
-      // Creating description
-      const divDescription = document.createElement('div');
-      $(divDescription).addClass('description');
-      $(divDescription).append(place.description);
-
-      const article = document.createElement('article');
-      $(article).append(divTitle);
-      $(article).append(divInformation);
-      $(article).append(divDescription);
-
-      $('.places').append(article);
+  let amenities = {};
+  $('INPUT[type="checkbox"]').change(function () {
+    if ($(this).is(':checked')) {
+      amenities[$(this).attr('data-id')] = $(this).attr('data-name');
+    } else {
+      delete amenities[$(this).attr('data-id')];
+    }
+    if (Object.values(amenities).length === 0) {
+      $('.amenities H4').html('&nbsp;');
+    } else {
+      $('.amenities H4').text(Object.values(amenities).join(', '));
     }
   });
 });
-
-function compare (a, b) {
-  if (a.name < b.name) {
-    return -1;
-  }
-  if (a.name > b.name) {
-    return 1;
-  }
-  return 0;
-}
