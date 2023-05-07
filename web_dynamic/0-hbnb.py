@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-""" Starts a Flash Web Application """
+""" Flask App that integrates with AirBnB static
+    HTML Template
+"""
 from models import storage
 from models.state import State
 from models.city import City
@@ -12,6 +14,9 @@ import uuid
 app = Flask(__name__)
 # app.jinja_env.trim_blocks = True
 # app.jinja_env.lstrip_blocks = True
+app.url_map.strict_slashes = False
+port = 5000
+host = '0.0.0.0'
 
 
 @app.teardown_appcontext
@@ -44,5 +49,5 @@ def hbnb():
 
 
 if __name__ == "__main__":
-    """ Main Function """
-    app.run(host='0.0.0.0', port=5000)
+    """ Main Flask App """
+    app.run(host=host, port=port)
