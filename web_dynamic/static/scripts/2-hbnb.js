@@ -1,5 +1,5 @@
 const request = require('request');
-const url = 'http://localhost:5001/api/v1/status';
+const url = 'http://0.0.0.0:5001/api/v1/status';
 
 try {
   $(document).ready(function () {
