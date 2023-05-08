@@ -15,9 +15,42 @@ try {
       }
     });
 
+    let AmenityDict = {};
+    let stateDict = {};
+    let cityDict = {};
+    const dataName = $(this).attr('data-name');
+    const = $(this).attr('data-id');
+
+    if $(this).is(':checked') {
+      if $(this).hasClass('amenities') {
+        AmenityDict[dataId] = dataName;
+      } else {
+        delete AmenityDict[dataId];
+      }
+      if $(this).hasClass('states') {
+        stateDict[dataId] = dataName;
+      } else {
+        delete stateDict[dataId];
+      }
+
+      if $(this).hasClass('cities') {
+        cityDict[dataId] = dataName;
+      } else {
+        cityDict[dataId] = dataName;
+      }
+      const amenityList = Object.values(AmenityDict).join(', ');
+      const stateDict = Object.values(stateDict).join('. ');
+      const cityDict = Object.values(cityDict).join(', ');
+      $('div.amenities h4').text(amenityList);
+      $('locations h4').text(`state: ${stateList}<br>cities: ${cities}`);
+    });
+
     $('button').click(function () {
       const amenityKeys = Object.keys(AmenityDict);
-      const data = JSON.stringify({ amenities: amenityKeys });
+      const cityKeys = Object.keys(cityDict);
+      const stateKeys = Object.keys(stateDict);
+      const data = JSON.stringify({ 'amenities': amenityKeys, 'states': stateKeys, 'cities': cityKeys });
+    }
 
       $.ajax({
         url: 'http://0.0.0.0:5001/api/v1/places_search',
