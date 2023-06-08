@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>{{ project_name }}</h1>
+        <nav>
+            <ul>
+                <li><a href="#section1">Section 1</a></li>
+                <li><a href="#section2">Section 2</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="section1">
+            <div class="cover-image">
+                <img src="path/to/your/image.jpg" alt="Cover Image">
+            </div>
+            <div class="project-description">
+                <h2>One-line phrase and/or description</h2>
+                <p>Your project description goes here.</p>
+            </div>
+        </section>
+        <section id="section2">
+            <div class="deployed-button">
+                <a href="{{ project_url }}" class="button">Deployed Project Application</a>
+            </div>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
