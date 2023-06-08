@@ -7,9 +7,8 @@ from flask import Flask
 from flask import render_template
 
 
-app = Flask('__name__')
+app = Flask(__name__)
 port=5004
-host=localhost
 
 app.route('/MoseLandingPage', strict_slashes=False)
 def landingPage():
@@ -18,4 +17,4 @@ def landingPage():
 
 
 if __name__ == '__main__':
-    app.run(host=host, port=port)
+    app.run(host="0.0.0.0", port=port)

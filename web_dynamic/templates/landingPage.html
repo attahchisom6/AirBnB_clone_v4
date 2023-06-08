@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="EN">
+  <head>
+    <title>Gaming World</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='0-landingPage.html') }}>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src={{ url_for('static', filename='scripts/0-landingPage.js'></script>
+  </head>
+  <body>
+    <header>
+      <h1>{{ project_name }}</h1>
+      <nav>
+        <ul>
+          <li><a href="#section1">Section 1</a></li>
+          <li><a href="section2">Section 2</a></li>
+      </nav>
+    </header>
+    <main>
+      <section id="section1">
+        <div class="cover-image">
+          <link rel="icon" href="images/cover_image.png">
+        </div>
+        <div class="project-description">
+          <h2>War with the Dragons</h2>
+          <p>
+          <br>
+          This is a shooting game that renders a fun, immersing 3D game.
+          </br>
+          U believe, U are u. Move into the world and show em, U cant be broken
+          </p>
+        </div>
+      </section>
+      <section id="section2">
+        <div class=deployed-button">
+          <a href="{{ project_url }}" class="button">The link to the game resources</a>
+        </div>
+    </main>
+  </body>
+</html>
