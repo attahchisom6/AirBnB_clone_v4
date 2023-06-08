@@ -6,11 +6,11 @@ this is a simple web application intended to render a landing page
 from flask import Flask
 from flask import render_template
 
-
 app = Flask(__name__)
-port=5004
+port = 5004
 
-app.route('/MoseLandingPage', strict_slashes=False)
+
+@app.route('/', strict_slashes=False)
 def landingPage():
     """our landing page"""
     return render_template('0-landingPage.html')
