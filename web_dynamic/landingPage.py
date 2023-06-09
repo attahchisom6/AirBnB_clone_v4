@@ -13,7 +13,11 @@ port = 5004
 @app.route('/', strict_slashes=False)
 def landingPage():
     """our landing page"""
-    return render_template('0-landingPage.html')
+    return render_template(
+            '0-landingPage.html',
+            project_name = "Game of the Brave",
+            project_url = "https://github.com/attahchisom6/The_Maze-find_your_way_out"
+            )
 
 
 if __name__ == '__main__':
