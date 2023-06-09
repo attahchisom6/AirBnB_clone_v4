@@ -9,11 +9,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='0-landingPageBody.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='0/0-landingPageFilters.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='0-landingPageFooter.css') }}">
-    <link rel="icon" type="text/css" href="{{ url_for('static', 'images/cover_image.png') }}">
+    <link rel="icon" type="icon" href="{{ url_for('static', 'images/cover_image.png') }}">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src={{ url_for('static', filename='scripts/0-landingPage.js') }}></script>
   </head>
-  <body>+
+  <body>
     <header>
       <h1>{{ project_name }}</h1>
       <nav>
@@ -47,7 +47,7 @@
         <a href="#">About</a>
         <a href="#">Contact</a>
       </div>
-      <p>&copy;2023 Gaming World. All right reserved</p>
+      <p>&copy; 2023 Gaming World. All right reserved</p>
     </footer>
   </body>
 </html>
