@@ -6,33 +6,33 @@
     <title>Gaming World</title>
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='0-landingPageHeader.css') }}">
-    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='0-landingPageBody.css') }}>
-    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename="0-landingPageFilters.css") }}>
-    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename="0-landingPageFooter.css") }}>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='0-landingPageBody.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='0/0-landingPageFilters.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='0-landingPageFooter.css') }}">
+    <link rel="icon" type="text/css" href="{{ url_for('static', 'images/cover_image.png') }}">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src={{ url_for('static', filename='scripts/0-landingPage.js') }}></script>
   </head>
-  <body>
+  <body>+
     <header>
       <h1>{{ project_name }}</h1>
       <nav>
         <ul>
           <li><a href="#section1">Section 1</a></li>
           <li><a href="#section2">Section 2</a></li>
+        </ul>
       </nav>
     </header>
     <main>
       <section id="section1">
-        <div class="cover-image">
-          <link rel="icon" href="images/cover_image.png">
-        </div>
+        <div class="cover-image"></div>
         <div class="project-description">
           <h2>War with the Dragons</h2>
           <p>
-          <br>
-          This is a shooting game that renders a fun, immersing 3D game.
-          </br>
-          U believe, U are u. Move into the world and show em, U cant be broken
+            This is a shooting game that renders a fun, immersing 3D game.
+            <br>
+              U believe, U are u. Move into the world and show em, U cant be broken
+            </br>
           </p>
         </div>
       </section>
