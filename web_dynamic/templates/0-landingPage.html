@@ -4,7 +4,10 @@
     <title>Gaming World</title>
     <meta charset="utf-8">
 
-    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='0-landingPage.html') }}>
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='0-landingPageHeader.css') }}>
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='0-landingPageBody.css') }}>
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename="0-landingPageFilters.css") }}>
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename="0-landingPageFooter.css") }}>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src={{ url_for('static', filename='scripts/0-landingPage.js') }}></script>
   </head>
@@ -37,5 +40,13 @@
           <a href="{{ project_url }}" class="button">The link to the game resources</a>
         </div>
     </main>
+    <footer>
+      <div class="footer-links">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+      <p>&copy;2023 gaming world. All right reserved</p>
+    </footer>
   </body>
 </html>

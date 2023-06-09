@@ -10,7 +10,7 @@ app = Flask(__name__)
 port = 5004
 
 
-@app.route('/', strict_slashes=False)
+@app.route('/MoseLandingPage', strict_slashes=False)
 def landingPage():
     """our landing page"""
     return render_template(
